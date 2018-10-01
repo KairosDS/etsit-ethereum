@@ -150,7 +150,7 @@ Para unir ambos peers primero debemos obtener la dirección del enode de la prim
 ```
 Con esta información desde la segunda consola de geth, la asociada al peer2, se debe ejecutar:
 ```sh
-> admin.addPeer(\"<Valor copiado>\")
+> admin.addPeer("<Valor copiado>")
 ```
 :bangbang: En el valor copiado hay que asegurarse de que la IP no es [::], debería ser 127.0.0.1. Si no lo fuese basta con cambiarlo antes de ejecutar el comando. :bangbang:
 
