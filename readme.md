@@ -146,7 +146,7 @@ $ cp -R /<Directorio de la cuenta>/keystore/<cuenta2>/. ./peer2DataDir/keystore/
 
 Para unir ambos peers primero debemos obtener la dirección del enode de la primera cuenta. Para ello, desde la primera consola de geth:
 ```sh
-> admin.nodeInfo.enod
+> admin.nodeInfo.enode
 ```
 Con esta información desde la segunda consola de geth, la asociada al peer2, se debe ejecutar:
 ```sh
@@ -189,9 +189,47 @@ Primero se debe desbolquear la cuenta desde la que se va a desplegar el SmartCon
 Una vez está desbloqueada la cuenta se debe introducir el abi y el binario para poder generar una instancia del SmartContract.
 ```sh
 > var myContract = eth.contract(<Contenido del ABI>)
-> var bytecode = \'0x<Contenido del binario>\'
+> var bytecode = '0x<Contenido del binario>'
 > var deploy = {from: eth.accounts[0], data: bytecode, gas: 2000000}
-> var myContractPartialInstance = myContract.new(\"<Parámetros de la función constructora del contrato>\", deploy)
+> var myContractPartialInstance = myContract.new("<Parámetros de la función constructora del contrato>", deploy)
 > var myContractInstance = myContract.at(myContractPartialInstance.address)
 ```
+Si se utiliza el contrato proporcionado para probarlo no se deben pasar parámetros a la función constructora ya que no hay, quedando por tanto la definición de la variable myContractPartialInstance como sigue:
+```sh
+> var myContractPartialInstance = myContract.new(deploy)
+```
 
+Además, si en alguno de los setter diese un error del tipo \"invalid address\", para solucionarlo basta con configurar la cuenta por defecto:
+```sh
+> eth.defaultAccount = eth.accounts[0]
+```
+
+# MyContract
+
+myContract.sol es un SmartContract muy básico que tiene dos funciones getter (hello() y goodBye()) y dos funciones setter (setHello() y setGoodBye()). Los setters reciben como parámetro un string.
+
+Estas funciones se pueden llamar desde la consola de geth como sigue:
+
+```sh
+> myContractInstance.hello()
+> myContractInstance.setHello("Hola")
+> myContractInstance.goodBye()
+> myContractInstance.setGoodBye("Adiós")
+```
+
+La primera función debería imprimir por pantalla \"Hello\", la siguiente un identificador de transacción, la tercera \"Good Bye\" y la última, igual que la segunda, un identificador de transacción.
+
+Por último, si se desea acceder a un SmartContract desde un peer que NO lo ha desplegado habrá que instanciar dicho contrato indicando el address del SmartContract.
+
+Para obtener el address del SmartContract, desde el cliente geth del peer que lo ha desplegado hay que ejecutar:
+```sh
+> myContractInstance.address
+```
+
+Para generar la nueva instancia desde el otro peer:
+```sh
+> var myContract = eth.contract(<Contenido del ABI>)
+> var myContractInstance = myContract.at("<Address del SmartContract>")
+```
+
+:bangbang: Para poder instanciar el SmartContract la cuenta debe estar desbloqueada. :bangbang:
