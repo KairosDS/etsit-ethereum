@@ -199,9 +199,13 @@ Si se utiliza el contrato proporcionado para probarlo no se deben pasar parámet
 > var myContractPartialInstance = myContract.new(deploy)
 ```
 
-Además, si en alguno de los setter diese un error del tipo \"invalid address\", para solucionarlo basta con configurar la cuenta por defecto:
+Además, si al ejecutar alguna de las funciones diese un error del tipo \"invalid address\", para solucionarlo basta con configurar la cuenta por defecto:
 ```sh
 > eth.defaultAccount = eth.accounts[0]
+```
+Otra opción para resolver este problema sería pasar el address desde el que se desea realizar la llamada a la función como parámetro:
+```sh
+> myContract.setHello("Hola", {from: eth.accounts[0]})
 ```
 
 # MyContract
