@@ -170,14 +170,14 @@ $ npm install -g solc
 
 ## Compilar el SmartContract para generar el abi y el binario
 ```sh
-$ solcjs --abi myContract.sol
-$ solcjs --bin myContract.sol
+$ solcjs --abi Election.sol
+$ solcjs --bin Election.sol
 ```
 
 ## Listar el abi y el binario
 ```sh
-$ more myContract_sol_myContract.abi
-$ mode myContract_sol_myContract.bin
+$ more Election_sol_Election.abi
+$ mode Election_sol_Election.bin
 ```
 
 ## Deplegar el contrato desde geth
@@ -188,15 +188,15 @@ Primero se debe desbolquear la cuenta desde la que se va a desplegar el SmartCon
 
 Una vez está desbloqueada la cuenta se debe introducir el abi y el binario para poder generar una instancia del SmartContract.
 ```sh
-> var myContract = eth.contract(<Contenido del ABI>)
+> var election = eth.contract(<Contenido del ABI>)
 > var bytecode = '0x<Contenido del binario>'
 > var deploy = {from: eth.accounts[0], data: bytecode, gas: 2000000}
-> var myContractPartialInstance = myContract.new("<Parámetros de la función constructora del contrato>", deploy)
-> var myContractInstance = myContract.at(myContractPartialInstance.address)
+> var electionPartialInstance = election.new("<Parámetros de la función constructora del contrato>", deploy)
+> var electionInstance = election.at(electionPartialInstance.address)
 ```
-Si se utiliza el contrato proporcionado para probarlo no se deben pasar parámetros a la función constructora ya que no hay, quedando por tanto la definición de la variable myContractPartialInstance como sigue:
+Si se utiliza el contrato proporcionado para probarlo no se deben pasar parámetros a la función constructora ya que no hay, quedando por tanto la definición de la variable electionPartialInstance como sigue:
 ```sh
-> var myContractPartialInstance = myContract.new(deploy)
+> var electionPartialInstance = election.new(deploy)
 ```
 
 Además, si al ejecutar alguna de las funciones diese un error del tipo \"invalid address\", para solucionarlo basta con configurar la cuenta por defecto:
@@ -205,35 +205,39 @@ Además, si al ejecutar alguna de las funciones diese un error del tipo \"invali
 ```
 Otra opción para resolver este problema sería pasar el address desde el que se desea realizar la llamada a la función como parámetro:
 ```sh
-> myContract.setHello("Hola", {from: eth.accounts[0]})
+> election.vote(1, {from: eth.accounts[0]})
 ```
 
-# MyContract
+# Election
 
-myContract.sol es un SmartContract muy básico que tiene dos funciones getter (hello() y goodBye()) y dos funciones setter (setHello() y setGoodBye()). Los setters reciben como parámetro un string.
+Election.sol es un SmartContract muy básico que permite gestionar un sistema de votación. En el constructor del SmartContract se especifican los candidatos a los que se puede votar. Además tiene dos funciones, una que permite votar a un candidato (una cuenta sólo puede votar una vez) y un getter por candidato que permite conocer el id, el nombre y el número de votos que ha recibido.
 
 Estas funciones se pueden llamar desde la consola de geth como sigue:
 
 ```sh
-> myContractInstance.hello()
-> myContractInstance.setHello("Hola")
-> myContractInstance.goodBye()
-> myContractInstance.setGoodBye("Adiós")
+> electionInstance.vote(_candidateId)
+> electionInstance.getVotes(_candidateId)
 ```
 
-La primera función debería imprimir por pantalla \"Hello\", la siguiente un identificador de transacción, la tercera \"Good Bye\" y la última, igual que la segunda, un identificador de transacción.
+La primera función imprimirá por pantalla el hash de la transacción puesto que se trata de una operación de escritura.
 
-Por último, si se desea acceder a un SmartContract desde un peer que NO lo ha desplegado habrá que instanciar dicho contrato indicando el address del SmartContract.
+La segunda función imprimirá por pantalla el resultado de la consulta, es decir, el identificador del candidato, el nombre del candidato y el número de votos que ha recibido.
+
+Además, dado que la variable candidates es pública, se puede acceder a los atributos de un candidato sin la necesidad de la función getVotes como sigue:
+
+```sh
+> electionInstance.candidates(_candidateId)
+```
 
 Para obtener el address del SmartContract, desde el cliente geth del peer que lo ha desplegado hay que ejecutar:
 ```sh
-> myContractInstance.address
+> electionInstance.address
 ```
 
 Para generar la nueva instancia desde el otro peer:
 ```sh
-> var myContract = eth.contract(<Contenido del ABI>)
-> var myContractInstance = myContract.at("<Address del SmartContract>")
+> var election = eth.contract(<Contenido del ABI>)
+> var electionInstance = election.at("<Address del SmartContract>")
 ```
 
 :bangbang: Para poder instanciar el SmartContract la cuenta debe estar desbloqueada. :bangbang:
