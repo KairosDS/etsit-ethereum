@@ -133,7 +133,7 @@ Si quisieses que dejase de minar bastaría con ejecutar desde la consola de geth
 ```
 
 ## Añadir otro peer
-El proceso es muy similar al anterior, pero se debe unir al peer actual. Además se debe indicar un puerto a la hora de arrancar el peer para evitar que los dos utilicen el mismo.
+El proceso es muy similar al anterior, pero se debe unir al peer actual. Primero se debe iniciar la red con el mismo fichero de configuración que para el nodo anterior.
 
 ```sh
 $ geth --datadir ./peer2DataDir init ./myGenesis.json
@@ -142,7 +142,7 @@ Desde otro terminal debemos copiar las claves asociadas a la segunda cuenta:
 ```sh
 $ cp -R /<Directorio de la cuenta>/keystore/<cuenta2>/. ./peer2DataDir/keystore/.
 ```
-
+Por último para levantar el nodo se debe indicar un puerto distinto al del primer peer para evitar que ambos utilicen el mismo.
 ```sh
 $ geth --datadir ./peer2DataDir --networkid 1234 --port 30304 console 2>> myEth2.log
 ```
