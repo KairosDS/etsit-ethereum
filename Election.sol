@@ -40,7 +40,8 @@ contract Election {
     }
 
     function getVotes(uint _candidateId) public view isValidCandidate(_candidateId) returns(uint, string, uint) {
-        emit candidateVoteCount(_candidateId, candidates[_candidateId].name, candidates[_candidateId].voteCount);
+        // I've commented the event in order to make this function a proper view function
+        //emit candidateVoteCount(_candidateId, candidates[_candidateId].name, candidates[_candidateId].voteCount);
         return (_candidateId, candidates[_candidateId].name, candidates[_candidateId].voteCount);
     }
 

@@ -77,9 +77,14 @@ $ geth account list
 $ geth --datadir ./myDataDir init ./myGenesis.json
 ```
 
+### Copiar las claves de una de las cuentas al direcorio "myDataDir"
+```sh
+cp -R /<Directorio de la cuenta>/keystore/<cuenta1>. ./myDataDir/keystore/.
+```
+
 ### Arrancar peer node de Ethereum
 ```sh
-$ geth --datadir ./myDataDir --networkis 1234 console 2>> myEth.log
+$ geth --datadir ./myDataDir --networkid 1234 console 2>> myEth.log
 ```
 
 ### Seguir los logs
@@ -87,11 +92,6 @@ Desde otro consola se pueden seguir los logs que se generen mediante:
 
 ```sh
 tail -f myEth.log
-```
-
-### Copiar las claves de una de las cuentas al direcorio "myDataDir"
-```sh
-cp -R /<Directorio de la cuenta>/keystore/<cuenta1>. ./myDataDir/keystore/.
 ```
 
 Si no se conoce el directorio en el que está almacenada la información asociada a una cuenta basta con listarla:
@@ -137,11 +137,14 @@ El proceso es muy similar al anterior, pero se debe unir al peer actual. Además
 
 ```sh
 $ geth --datadir ./peer2DataDir init ./myGenesis.json
-$ geth --datadir ./peer2DataDir --networkid 1234 --port 30304 console 2>> myEth2.log
 ```
 Desde otro terminal debemos copiar las claves asociadas a la segunda cuenta:
 ```sh
 $ cp -R /<Directorio de la cuenta>/keystore/<cuenta2>/. ./peer2DataDir/keystore/.
+```
+
+```sh
+$ geth --datadir ./peer2DataDir --networkid 1234 --port 30304 console 2>> myEth2.log
 ```
 
 Para unir ambos peers primero debemos obtener la dirección del enode de la primera cuenta. Para ello, desde la primera consola de geth:
@@ -177,7 +180,7 @@ $ solcjs --bin Election.sol
 ## Listar el abi y el binario
 ```sh
 $ more Election_sol_Election.abi
-$ mode Election_sol_Election.bin
+$ more Election_sol_Election.bin
 ```
 
 ## Deplegar el contrato desde geth
